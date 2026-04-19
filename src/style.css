@@ -1,0 +1,51 @@
+.root {
+    -fx-background-color: #121212;
+    -fx-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.label-header {
+    -fx-text-fill: #39ff14;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+.label-subheader {
+    -fx-text-fill: #b3b3b3;
+    -fx-font-size: 16px;
+}
+.button-neon {
+    -fx-background-color: transparent;
+    -fx-border-color: #39ff14;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-text-fill: #39ff14;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 8 20 8 20;
+    -fx-cursor: hand;
+}
+.button-neon:hover {
+    -fx-background-color: #39ff14;
+    -fx-text-fill: #121212;
+    -fx-effect: dropshadow(three-pass-box, #39ff14, 10, 0, 0, 0);
+}
+.text-field-dark {
+    -fx-background-color: #1e1e1e;
+    -fx-text-fill: white;
+    -fx-border-color: #444;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 10;
+    -fx-font-size: 14px;
+}
+.label-normal {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}
+.glass-pane {
+    -fx-background-color: rgba(30, 30, 30, 0.75);
+    -fx-background-radius: 15;
+    -fx-border-color: rgba(255, 255, 255, 0.15);
+    -fx-border-radius: 15;
+    -fx-border-width: 1px;
+    -fx-padding: 30;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 20, 0, 0, 0);
+}
