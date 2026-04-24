@@ -2,6 +2,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
@@ -82,6 +83,15 @@ public class ActivityLogger {
             }
         });
 
+        Label dateLabel = new Label("Activity Date");
+        dateLabel.getStyleClass().add("label-normal");
+        dateLabel.setStyle("-fx-font-weight: bold;");
+
+        DatePicker datePicker = new DatePicker(java.time.LocalDate.now());
+        datePicker.setPromptText("Select Date");
+        datePicker.setStyle("-fx-font-size: 14px;");
+        datePicker.setMaxWidth(400);
+
         Label errorLabel = new Label("");
         errorLabel.setStyle("-fx-text-fill: #e74c3c; -fx-font-weight: bold;");
 
@@ -99,6 +109,12 @@ public class ActivityLogger {
                 return;
             }
 
+            if (datePicker.getValue() == null) {
+                errorLabel.setText("Please select a date");
+                errorLabel.setStyle("-fx-text-fill: #e74c3c; -fx-font-weight: bold;");
+                return;
+            }
+
             try {
                 double quantity = Double.parseDouble(qtyStr);
                 if (quantity <= 0) {
@@ -106,17 +122,22 @@ public class ActivityLogger {
                     return;
                 }
                 
-                int rewardsBefore = getUserRewardCount();
-                logActivity(typeInfoMap.get(selectedType), quantity);
-                int rewardsAfter = getUserRewardCount();
-                
-                if (rewardsAfter > rewardsBefore) {
-                    errorLabel.setText("Activity logged! 🏅 YOU EARNED A NEW BADGE!");
-                    errorLabel.setStyle("-fx-text-fill: #f1c40f; -fx-font-weight: bold; -fx-effect: dropshadow(one-pass-box, black, 2, 0, 1, 1);");
-                } else {
-                    errorLabel.setText("Activity logged successfully!");
-                    errorLabel.setStyle("-fx-text-fill: #2ecc71; -fx-font-weight: bold;");
-                }
+                logActivity(typeInfoMap.get(selectedType), quantity, datePicker.getValue().toString());
+
+                // Check achievements on a background thread
+                new Thread(() -> {
+                    java.util.List<String> earned = AchievementService.checkAndGrantRewards();
+                    javafx.application.Platform.runLater(() -> {
+                        if (!earned.isEmpty()) {
+                            errorLabel.setText("🏅 New badge(s) earned: " + String.join(", ", earned));
+                            errorLabel.setStyle("-fx-text-fill: #10b981; -fx-font-weight: bold;");
+                        } else {
+                            errorLabel.setText("Activity logged successfully!");
+                            errorLabel.setStyle("-fx-text-fill: #10b981; -fx-font-weight: bold;");
+                        }
+                    });
+                }).start();
+
                 quantityField.clear();
                 
             } catch (NumberFormatException ex) {
@@ -125,7 +146,7 @@ public class ActivityLogger {
             }
         });
 
-        glassPane.getChildren().addAll(titleLabel, subLabel, categoryCombo, typeCombo, quantityField, unitLabel, factorLabel, submitBtn, errorLabel);
+        glassPane.getChildren().addAll(titleLabel, subLabel, categoryCombo, typeCombo, quantityField, unitLabel, factorLabel, dateLabel, datePicker, submitBtn, errorLabel);
         root.getChildren().add(glassPane);
         return root;
     }
@@ -176,8 +197,7 @@ public class ActivityLogger {
         return 0;
     }
 
-    private void logActivity(ActivityTypeInfo info, double quantity) {
-        String date = LocalDate.now().toString();
+    private void logActivity(ActivityTypeInfo info, double quantity, String date) {
         double co2Result = quantity * info.co2PerUnit;
 
         String insertActivity = "INSERT INTO Activities (user_id, activity_type_id, quantity, unit, activity_date) VALUES (?, ?, ?, ?, ?)";

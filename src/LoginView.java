@@ -22,9 +22,9 @@ public class LoginView {
         glassPane.setMaxWidth(450);
         glassPane.getStyleClass().add("glass-pane");
 
-        Label titleLabel = new Label("EcoCampus");
+        Label titleLabel = new Label("Eco-Track");
         titleLabel.getStyleClass().add("label-title");
-        
+
         Label subLabel = new Label("Sign in to your account");
         subLabel.getStyleClass().add("label-subheader");
 
@@ -65,7 +65,8 @@ public class LoginView {
 
         registerBtn.setOnAction(e -> ViewManager.showRegister());
 
-        glassPane.getChildren().addAll(titleLabel, subLabel, emailField, passwordField, loginBtn, registerBtn, errorLabel);
+        glassPane.getChildren().addAll(titleLabel, subLabel, emailField, passwordField, loginBtn, registerBtn,
+                errorLabel);
         root.getChildren().add(glassPane);
         return root;
     }
@@ -73,7 +74,7 @@ public class LoginView {
     private boolean authenticate(String email, String password) {
         String query = "SELECT user_id, org_id, name, password_hash, account_type, role FROM Users WHERE email = ?";
         try (Connection conn = DatabaseUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+                PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
@@ -82,13 +83,12 @@ public class LoginView {
                 if (hash.equals(Integer.toHexString(password.hashCode()))) {
                     Integer orgId = rs.getObject("org_id") != null ? rs.getInt("org_id") : null;
                     SessionManager.setSession(
-                        rs.getInt("user_id"), 
-                        rs.getString("name"), 
-                        email,
-                        orgId,
-                        rs.getString("account_type"),
-                        rs.getString("role")
-                    );
+                            rs.getInt("user_id"),
+                            rs.getString("name"),
+                            email,
+                            orgId,
+                            rs.getString("account_type"),
+                            rs.getString("role"));
                     return true;
                 }
             }

@@ -18,32 +18,14 @@ public class MainLayout {
     public Pane getView() {
         mainPane = new BorderPane();
         
-        // Header
-        HBox header = new HBox();
-        header.setAlignment(Pos.CENTER_LEFT);
-        header.setPadding(new Insets(20, 30, 20, 30));
-        header.setStyle("-fx-background-color: rgba(255, 255, 255, 0.5); -fx-border-color: rgba(255,255,255,0.4); -fx-border-width: 0 0 1 0;");
-        
-        Label userLabel = new Label("Welcome back, " + SessionManager.getName());
-        userLabel.getStyleClass().add("label-header");
-        
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-        
-        Button logoutBtn = new Button("Log Out");
-        logoutBtn.getStyleClass().add("button-secondary");
-        logoutBtn.setOnAction(e -> {
-            SessionManager.clearSession();
-            ViewManager.showLogin();
-        });
-        
-        header.getChildren().addAll(userLabel, spacer, logoutBtn);
-        mainPane.setTop(header);
-
         // Sidebar Navigation
         sidebar = new VBox(15);
         sidebar.setPrefWidth(250);
         sidebar.getStyleClass().add("sidebar");
+
+        Label userLabel = new Label("Welcome, " + SessionManager.getName());
+        userLabel.getStyleClass().add("label-header");
+        userLabel.setStyle("-fx-font-size: 18px; -fx-padding: 0 0 20 0;");
         
         Button dashboardBtn = createNavButton("Dashboard", () -> new DashboardHome().getView());
         Button logActivityBtn = createNavButton("Log Activity", () -> new ActivityLogger().getView());
@@ -54,13 +36,26 @@ public class MainLayout {
         Button analyticsBtn = createNavButton("Analytics Map", () -> new AnalyticsView().getView());
         Button reportsBtn = createNavButton("Saved Reports", () -> new ReportsView().getView());
         
-        sidebar.getChildren().addAll(dashboardBtn, logActivityBtn, historyBtn, goalsBtn, offsetsBtn, rewardsBtn, analyticsBtn, reportsBtn);
+        sidebar.getChildren().addAll(userLabel, dashboardBtn, logActivityBtn, historyBtn, goalsBtn, offsetsBtn, rewardsBtn, analyticsBtn, reportsBtn);
 
         // Render specific UI for office users
         if ("office".equals(SessionManager.getAccountType())) {
             Button orgBtn = createNavButton("My Organization", () -> new OrganizationView().getView());
             sidebar.getChildren().add(orgBtn);
         }
+
+        Region sidebarSpacer = new Region();
+        VBox.setVgrow(sidebarSpacer, Priority.ALWAYS);
+
+        Button logoutBtn = new Button("Log Out");
+        logoutBtn.getStyleClass().add("button-secondary");
+        logoutBtn.setMaxWidth(Double.MAX_VALUE);
+        logoutBtn.setOnAction(e -> {
+            SessionManager.clearSession();
+            ViewManager.showLogin();
+        });
+
+        sidebar.getChildren().addAll(sidebarSpacer, logoutBtn);
         
         mainPane.setLeft(sidebar);
 

@@ -22,8 +22,14 @@ public class GoalsView {
 
     public Pane getView() {
         VBox root = new VBox(30);
-        root.setPadding(new Insets(40));
-        root.setAlignment(Pos.TOP_LEFT);
+        root.setAlignment(Pos.TOP_CENTER);
+        root.setPadding(new Insets(50, 80, 30, 80));
+
+        // ── Form Card (matches ActivityLogger style) ──────────────────────────
+        VBox formCard = new VBox(15);
+        formCard.setAlignment(Pos.CENTER);
+        formCard.setMaxWidth(500);
+        formCard.getStyleClass().add("glass-pane");
 
         Label pageTitle = new Label("My Sustainability Goals");
         pageTitle.getStyleClass().add("label-title");
@@ -31,33 +37,37 @@ public class GoalsView {
         Label subTitle = new Label("Set limits on your carbon footprint");
         subTitle.getStyleClass().add("label-subheader");
 
-        // Goal Creation Form
-        HBox formBox = new HBox(15);
-        formBox.setAlignment(Pos.CENTER_LEFT);
-        formBox.getStyleClass().add("glass-pane");
-        formBox.setPadding(new Insets(20));
-
         TextField targetField = new TextField();
         targetField.setPromptText("Target CO2 (kg)");
         targetField.getStyleClass().add("text-field-glass");
-        targetField.setPrefWidth(120);
+        targetField.setMaxWidth(400);
 
         ComboBox<String> periodCombo = new ComboBox<>();
         periodCombo.getItems().addAll("daily", "weekly", "monthly");
         periodCombo.setValue("monthly");
         periodCombo.getStyleClass().add("combo-box-glass");
+        periodCombo.setMaxWidth(400);
 
+        Label startLbl = new Label("Start Date");
+        startLbl.getStyleClass().add("label-normal");
+        startLbl.setStyle("-fx-font-weight: bold;");
         DatePicker startDatePicker = new DatePicker(LocalDate.now());
         startDatePicker.setStyle("-fx-font-size: 14px;");
-        
+        startDatePicker.setMaxWidth(400);
+
+        Label endLbl = new Label("End Date");
+        endLbl.getStyleClass().add("label-normal");
+        endLbl.setStyle("-fx-font-weight: bold;");
         DatePicker endDatePicker = new DatePicker(LocalDate.now().plusMonths(1));
         endDatePicker.setStyle("-fx-font-size: 14px;");
-
-        Button submitBtn = new Button("Set Goal");
-        submitBtn.getStyleClass().add("button-primary");
+        endDatePicker.setMaxWidth(400);
 
         Label errorLabel = new Label("");
         errorLabel.setStyle("-fx-text-fill: #e74c3c; -fx-font-weight: bold;");
+
+        Button submitBtn = new Button("Set Goal");
+        submitBtn.getStyleClass().add("button-primary");
+        submitBtn.setMaxWidth(400);
 
         submitBtn.setOnAction(e -> {
             try {
@@ -80,9 +90,10 @@ public class GoalsView {
             }
         });
 
-        formBox.getChildren().addAll(targetField, periodCombo, new Label("Start:"), startDatePicker, new Label("End:"), endDatePicker, submitBtn, errorLabel);
+        formCard.getChildren().addAll(pageTitle, subTitle, targetField, periodCombo, startLbl, startDatePicker, endLbl, endDatePicker, submitBtn, errorLabel);
+        root.getChildren().add(formCard);
 
-        // Display Active Goals
+        // ── Goals List ────────────────────────────────────────────────────────
         Label listTitle = new Label("Active Goals");
         listTitle.getStyleClass().add("label-header");
 
@@ -91,9 +102,13 @@ public class GoalsView {
         scroll.setFitToWidth(true);
         scroll.setStyle("-fx-background: transparent; -fx-background-color: transparent;");
 
+        VBox listSection = new VBox(15);
+        listSection.setPadding(new Insets(20, 80, 20, 80));
+        listSection.getChildren().addAll(listTitle, scroll);
+
         loadGoals();
 
-        root.getChildren().addAll(pageTitle, subTitle, formBox, listTitle, scroll);
+        root.getChildren().add(listSection);
         return root;
     }
 

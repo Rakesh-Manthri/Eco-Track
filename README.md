@@ -75,7 +75,7 @@ Ensure you have downloaded an active unzipped JavaFX-SDK (e.g., version 25.0.2).
 Open PowerShell in the project root and compile the raw source code pointing to your external jar files. We will output the compiled files to a `bin` directory:
 ```powershell
 mkdir bin
-javac -cp "lib/*" -d bin src/*.java
+javac --module-path "C:\Program Files\Java\javafx-sdk-25.0.2\lib" --add-modules javafx.controls,javafx.fxml -cp "lib/*" -d bin src/*.java
 ```
 
 ### Step 4: Run the Application

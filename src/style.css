@@ -1,139 +1,208 @@
+/* =========================================
+   ROOT & CONTAINERS (Basic Clean Light Theme)
+   ========================================= */
 .root-pane {
-    /* Soft light gradient landscape background */
-    -fx-background-color: linear-gradient(to bottom right, #e0f7fa, #ffffff, #f3e5f5);
-    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+    -fx-background-color: #f3f4f6; /* Clean light gray background */
+    -fx-font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
 }
 
-.glass-pane {
-    /* Glassmorphism light effect */
-    -fx-background-color: rgba(255, 255, 255, 0.55);
-    -fx-background-radius: 20px;
-    -fx-border-color: rgba(255, 255, 255, 0.8);
-    -fx-border-radius: 20px;
-    -fx-border-width: 1.5px;
+.glass-pane, .card {
+    -fx-background-color: #ffffff; /* Solid white */
+    -fx-background-radius: 12px;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 12px;
+    -fx-border-width: 1px;
     -fx-padding: 30px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 25, 0, 0, 10);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.03), 10, 0, 0, 4);
 }
 
 .sidebar {
-    -fx-background-color: rgba(255, 255, 255, 0.7);
-    -fx-background-radius: 0 20 20 0;
-    -fx-border-color: rgba(255, 255, 255, 0.8);
-    -fx-border-width: 0 1.5 0 0;
+    -fx-background-color: #ffffff; /* Solid white sidebar */
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 0 1px 0 0;
     -fx-padding: 30 20;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 15, 0, 5, 0);
 }
 
+/* =========================================
+   TYPOGRAPHY
+   ========================================= */
 .label-title {
     -fx-font-size: 32px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #2c3e50;
-    -fx-effect: dropshadow(one-pass-box, rgba(255,255,255,0.8), 2, 0, 1, 1);
+    -fx-font-weight: 800;
+    -fx-text-fill: #111827; /* Dark slate */
+    -fx-effect: none;
 }
 
 .label-header {
-    -fx-font-size: 24px;
-    -fx-font-weight: 600;
-    -fx-text-fill: #34495e;
+    -fx-font-size: 22px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #1f2937;
+    -fx-effect: none;
 }
 
 .label-subheader {
     -fx-font-size: 14px;
-    -fx-text-fill: #7f8c8d;
+    -fx-text-fill: #6b7280; /* Subtle gray */
+    -fx-effect: none;
 }
 
-.label-normal {
+.label-normal, .label {
     -fx-font-size: 15px;
-    -fx-text-fill: #2c3e50;
+    -fx-text-fill: #374151;
+    -fx-effect: none;
 }
 
-.text-field-glass {
-    -fx-background-color: rgba(255, 255, 255, 0.7);
-    -fx-border-color: rgba(189, 195, 199, 0.5);
+/* =========================================
+   UNIFIED INPUTS (TextField, ComboBox, DatePicker)
+   ========================================= */
+.text-field-glass, 
+.combo-box-glass, 
+.date-picker {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #d1d5db;
     -fx-border-radius: 8px;
     -fx-background-radius: 8px;
-    -fx-padding: 12px;
+    -fx-pref-height: 42px; 
+    -fx-padding: 0 12px 0 12px; 
     -fx-font-size: 14px;
-    -fx-text-fill: #2c3e50;
-}
-.text-field-glass:focused {
-    -fx-border-color: #3498db;
-    -fx-background-color: rgba(255, 255, 255, 0.9);
+    -fx-text-fill: #1f2937;
+    -fx-prompt-text-fill: #9ca3af;
 }
 
-.combo-box-glass {
-    -fx-background-color: rgba(255, 255, 255, 0.7);
-    -fx-border-color: rgba(189, 195, 199, 0.5);
-    -fx-border-radius: 8px;
-    -fx-background-radius: 8px;
-    -fx-padding: 8px;
-    -fx-font-size: 14px;
-}
-
-.button-primary {
-    -fx-background-color: linear-gradient(to right, #00b09b, #96c93d);
-    -fx-background-radius: 25px;
-    -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-padding: 12px 25px;
-    -fx-cursor: hand;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 176, 155, 0.4), 10, 0, 0, 5);
-}
-.button-primary:hover {
-    -fx-background-color: linear-gradient(to right, #009988, #85b82e);
-    -fx-translate-y: -2px;
-}
-.button-primary:pressed {
-    -fx-translate-y: 1px;
-}
-
-.button-secondary {
+/* Consistency for the internal parts */
+.combo-box-glass .cell, 
+.date-picker .text-field {
     -fx-background-color: transparent;
-    -fx-border-color: #00b09b;
-    -fx-border-radius: 25px;
-    -fx-border-width: 2px;
-    -fx-text-fill: #00b09b;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-padding: 10px 23px;
-    -fx-cursor: hand;
-}
-.button-secondary:hover {
-    -fx-background-color: rgba(0, 176, 155, 0.1);
+    -fx-text-fill: #1f2937;
+    -fx-padding: 0;
 }
 
+/* Focused State */
+.text-field-glass:focused, 
+.combo-box-glass:focused, 
+.date-picker:focused {
+    -fx-border-color: #10b981; /* Emerald green accent */
+    -fx-border-width: 2px;
+    -fx-background-color: #ffffff;
+}
+
+/* =========================================
+   PRIMARY BUTTONS
+   ========================================= */
+.button-primary {
+    -fx-background-color: #10b981;
+    -fx-text-fill: white;
+    -fx-font-weight: 600;
+    -fx-font-size: 14px;
+    -fx-padding: 10 24;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(16, 185, 129, 0.2), 8, 0, 0, 4);
+}
+
+.button-primary:hover {
+    -fx-background-color: #059669;
+}
+
+.button-primary:pressed {
+    -fx-background-color: #047857;
+}
+
+/* =========================================
+   SECONDARY / DANGER BUTTONS
+   ========================================= */
+.button-secondary {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #374151;
+    -fx-font-weight: 600;
+    -fx-font-size: 14px;
+    -fx-padding: 10 24;
+    -fx-background-radius: 8px;
+    -fx-border-color: #d1d5db;
+    -fx-border-radius: 8px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 4, 0, 0, 2);
+}
+
+.button-secondary:hover {
+    -fx-background-color: #f9fafb;
+    -fx-text-fill: #111827;
+    -fx-border-color: #9ca3af;
+}
+
+.button-secondary:pressed {
+    -fx-background-color: #e5e7eb;
+}
+
+.button-danger {
+    -fx-background-color: #ef4444;
+    -fx-text-fill: white;
+    -fx-font-weight: 600;
+    -fx-font-size: 14px;
+    -fx-padding: 10 24;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+}
+
+.button-danger:hover {
+    -fx-background-color: #dc2626;
+}
+
+/* =========================================
+   DROPDOWN & CALENDAR POPUPS
+   ========================================= */
+.combo-box-popup .list-view {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 8px;
+    -fx-border-color: #d1d5db;
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 8, 0, 0, 4);
+}
+
+.combo-box-popup .list-cell {
+    -fx-text-fill: #374151;
+    -fx-padding: 10px 15px;
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: #f3f4f6;
+    -fx-text-fill: #111827;
+}
+
+.date-picker-popup {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #d1d5db;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 8, 0, 0, 4);
+}
+
+.date-picker-popup .day-cell {
+    -fx-text-fill: #374151;
+}
+
+.date-picker-popup .selected-day {
+    -fx-background-color: #10b981;
+    -fx-text-fill: white;
+}
+
+/* =========================================
+   SIDEBAR BUTTONS
+   ========================================= */
 .button-sidebar {
     -fx-background-color: transparent;
-    -fx-text-fill: #34495e;
-    -fx-font-size: 15px;
+    -fx-text-fill: #4b5563;
     -fx-font-weight: 600;
     -fx-alignment: center-left;
     -fx-padding: 12 20;
-    -fx-background-radius: 10px;
     -fx-cursor: hand;
+    -fx-background-radius: 8px;
 }
+
 .button-sidebar:hover {
-    -fx-background-color: rgba(52, 152, 219, 0.1);
-    -fx-text-fill: #2980b9;
+    -fx-background-color: #f3f4f6;
+    -fx-text-fill: #111827;
 }
+
 .button-sidebar.active {
-    -fx-background-color: rgba(52, 152, 219, 0.15);
-    -fx-text-fill: #2980b9;
-    -fx-border-color: #2980b9;
-    -fx-border-width: 0 0 0 4px;
-    -fx-border-radius: 8px;
-}
-
-.card {
-    -fx-background-color: white;
-    -fx-background-radius: 15px;
-    -fx-padding: 25px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);
-}
-
-.stat-value {
-    -fx-font-size: 36px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #27ae60;
+    -fx-background-color: #ecfdf5;
+    -fx-text-fill: #10b981;
 }

@@ -20,41 +20,42 @@ public class OffsetsView {
 
     public Pane getView() {
         VBox root = new VBox(30);
-        root.setPadding(new Insets(40));
-        root.setAlignment(Pos.TOP_LEFT);
+        root.setAlignment(Pos.TOP_CENTER);
+        root.setPadding(new Insets(50, 80, 30, 80));
 
-        Label pageTitle = new Label("Carbon OffsetsTracker");
+        // ── Form Card (matches ActivityLogger style) ──────────────────────────
+        VBox formCard = new VBox(15);
+        formCard.setAlignment(Pos.CENTER);
+        formCard.setMaxWidth(500);
+        formCard.getStyleClass().add("glass-pane");
+
+        Label pageTitle = new Label("Carbon Offsets Tracker");
         pageTitle.getStyleClass().add("label-title");
-        
-        Label subTitle = new Label("Log activities that reduce your net footprint like planting trees");
-        subTitle.getStyleClass().add("label-subheader");
 
-        // Offset Logging Form
-        HBox formBox = new HBox(15);
-        formBox.setAlignment(Pos.CENTER_LEFT);
-        formBox.getStyleClass().add("glass-pane");
-        formBox.setPadding(new Insets(20));
+        Label subTitle = new Label("Log activities that reduce your net footprint");
+        subTitle.getStyleClass().add("label-subheader");
 
         TextField typeField = new TextField();
         typeField.setPromptText("Offset Type (e.g. Tree planted)");
         typeField.getStyleClass().add("text-field-glass");
-        typeField.setPrefWidth(200);
+        typeField.setMaxWidth(400);
 
         TextField co2Field = new TextField();
         co2Field.setPromptText("CO2 Reduced (kg)");
         co2Field.getStyleClass().add("text-field-glass");
-        co2Field.setPrefWidth(140);
+        co2Field.setMaxWidth(400);
 
         TextField costField = new TextField();
-        costField.setPromptText("Cost ($) (Optional)");
+        costField.setPromptText("Cost (Optional)");
         costField.getStyleClass().add("text-field-glass");
-        costField.setPrefWidth(140);
-
-        Button submitBtn = new Button("Log Offset");
-        submitBtn.getStyleClass().add("button-primary");
+        costField.setMaxWidth(400);
 
         Label errorLabel = new Label("");
         errorLabel.setStyle("-fx-text-fill: #e74c3c; -fx-font-weight: bold;");
+
+        Button submitBtn = new Button("Log Offset");
+        submitBtn.getStyleClass().add("button-primary");
+        submitBtn.setMaxWidth(400);
 
         submitBtn.setOnAction(e -> {
             try {
@@ -81,14 +82,26 @@ public class OffsetsView {
                 costField.clear();
                 errorLabel.setText("");
                 loadOffsets();
+
+                // Check achievements on background thread
+                new Thread(() -> {
+                    java.util.List<String> earned = AchievementService.checkAndGrantRewards();
+                    javafx.application.Platform.runLater(() -> {
+                        if (!earned.isEmpty()) {
+                            errorLabel.setText("🏅 Badge(s) unlocked: " + String.join(", ", earned));
+                            errorLabel.setStyle("-fx-text-fill: #10b981; -fx-font-weight: bold;");
+                        }
+                    });
+                }).start();
             } catch (NumberFormatException ex) {
                 errorLabel.setText("Invalid number format");
             }
         });
 
-        formBox.getChildren().addAll(typeField, co2Field, costField, submitBtn, errorLabel);
+        formCard.getChildren().addAll(pageTitle, subTitle, typeField, co2Field, costField, submitBtn, errorLabel);
+        root.getChildren().add(formCard);
 
-        // Display Logged Offsets
+        // ── Offsets List ────────────────────────────────────────────────────────
         Label listTitle = new Label("My Offset History");
         listTitle.getStyleClass().add("label-header");
 
@@ -97,9 +110,13 @@ public class OffsetsView {
         scroll.setFitToWidth(true);
         scroll.setStyle("-fx-background: transparent; -fx-background-color: transparent;");
 
+        VBox listSection = new VBox(15);
+        listSection.setPadding(new Insets(20, 80, 20, 80));
+        listSection.getChildren().addAll(listTitle, scroll);
+
         loadOffsets();
 
-        root.getChildren().addAll(pageTitle, subTitle, formBox, listTitle, scroll);
+        root.getChildren().add(listSection);
         return root;
     }
 

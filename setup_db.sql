@@ -1,7 +1,7 @@
 -- ============================================================
 --   PERSONAL CARBON FOOTPRINT & SUSTAINABILITY TRACKER
 --   Database: carbon_tracker
---   Author  : Rakesh
+--   Author  : Rakesh,Ashish
 --   Course  : Database Management Systems
 -- ============================================================
 
