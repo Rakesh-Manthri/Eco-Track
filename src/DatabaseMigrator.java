@@ -19,20 +19,28 @@ public class DatabaseMigrator {
         System.out.println("  Eco-Track Cloud Database Migration & Setup");
         System.out.println("=================================================");
 
-        File scriptFile = new File("setup_db.sql");
-        if (!scriptFile.exists()) {
-            System.err.println("❌ setup_db.sql not found in workspace root!");
-            return;
-        }
-
         try (Connection conn = DatabaseUtil.getConnection()) {
+            String productVersion = conn.getMetaData().getDatabaseProductVersion();
+            boolean isTiDB = productVersion != null && productVersion.toLowerCase().contains("tidb");
+            
+            File scriptFile = (isTiDB && new File("setup_db_tidb.sql").exists())
+                ? new File("setup_db_tidb.sql")
+                : new File("setup_db.sql");
+
+            if (!scriptFile.exists()) {
+                System.err.println("❌ Schema script " + scriptFile.getName() + " not found!");
+                return;
+            }
+
             System.out.println("✅ Connected to: " + conn.getMetaData().getURL());
-            System.out.println("   Database Product: " + conn.getMetaData().getDatabaseProductName() + " " + conn.getMetaData().getDatabaseProductVersion());
+            System.out.println("   Database Product: " + conn.getMetaData().getDatabaseProductName() + " " + productVersion);
+            System.out.println("   Detected Server Type: " + (isTiDB ? "TiDB Cloud (Serverless)" : "Standard MySQL"));
+            System.out.println("   Executing Schema Script: " + scriptFile.getName());
             System.out.println("   User: " + conn.getMetaData().getUserName());
             System.out.println();
 
             List<String> statements = parseSqlScript(scriptFile);
-            System.out.println("📦 Parsed " + statements.size() + " SQL statements from setup_db.sql. Executing...");
+            System.out.println("📦 Parsed " + statements.size() + " SQL statements from " + scriptFile.getName() + ". Executing...");
 
             try (Statement stmt = conn.createStatement()) {
                 int successCount = 0;

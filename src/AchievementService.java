@@ -60,10 +60,39 @@ public class AchievementService {
                     newlyEarned.add(rewardName);
                 }
             }
+            // Evaluate active goals and update to 'failed' if target exceeded
+            checkAndFailExceededGoals(conn, userId);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
         return newlyEarned;
+    }
+
+    /**
+     * Check if any active goal has been exceeded by logged activities and mark it as 'failed'.
+     * Provides full compatibility with cloud databases (like TiDB) that do not support triggers.
+     */
+    public static void checkAndFailExceededGoals(Connection conn, int userId) {
+        String sql =
+            "UPDATE Goals g " +
+            "SET g.status = 'failed' " +
+            "WHERE g.user_id = ? " +
+            "  AND g.status = 'active' " +
+            "  AND g.target_co2_kg < (" +
+            "      SELECT COALESCE(SUM(ec.co2_result), 0) " +
+            "      FROM Emission_Calculations ec " +
+            "      JOIN Activities a ON ec.activity_id = a.activity_id " +
+            "      WHERE a.user_id = ? " +
+            "        AND a.activity_date BETWEEN g.start_date AND g.end_date" +
+            "  )";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            stmt.setInt(2, userId);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────────────

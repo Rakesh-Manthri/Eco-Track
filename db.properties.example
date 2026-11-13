@@ -4,17 +4,17 @@
 # 'db.properties' is gitignored to protect your credentials.
 # ==============================================================
 
-# For Aiven for MySQL:
-# 1. Sign up at https://aiven.io (free trial available)
-# 2. Create a "MySQL" service
-# 3. Copy the "Service URI" or connection parameters from the Overview tab
-DB_HOST=mysql-xxxx-your-project.aivencloud.com
-DB_PORT=12345
+# For TiDB Cloud Serverless:
+# 1. Sign up at https://tidbcloud.com (free, no credit card required)
+# 2. Click "Create Cluster" -> choose "Serverless" -> choose nearest region
+# 3. Click "Connect" -> Select "General" / "Java" to view your host, port, user, password:
+DB_HOST=gateway01.ap-southeast-1.prod.aws.tidbcloud.com
+DB_PORT=4000
 DB_NAME=carbon_tracker
-DB_USER=avnadmin
-DB_PASSWORD=your_aiven_password
-DB_SSL_MODE=REQUIRED
+DB_USER=your_cluster_prefix.root
+DB_PASSWORD=your_tidb_password
+DB_SSL_MODE=VERIFY_IDENTITY
 DB_USE_SSL=true
 
-# (Optional) Full JDBC URL override if you prefer to paste directly:
-# DB_URL=jdbc:mysql://mysql-xxxx-your-project.aivencloud.com:12345/carbon_tracker?sslMode=REQUIRED&allowPublicKeyRetrieval=true
+# (Optional) Direct JDBC URL:
+# DB_URL=jdbc:mysql://gateway01.ap-southeast-1.prod.aws.tidbcloud.com:4000/carbon_tracker?sslMode=VERIFY_IDENTITY&useSSL=true&allowPublicKeyRetrieval=true
