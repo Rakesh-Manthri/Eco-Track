@@ -17,6 +17,7 @@ lib/
 db.properties
 .env
 *.env
+*.pem
 
 # Ignore Mac OS hidden files
 .DS_Store

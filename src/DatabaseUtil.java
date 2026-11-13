@@ -29,15 +29,11 @@ public class DatabaseUtil {
             }
         }
 
+        String host = getPropOrEnv(props, "DB_HOST", null);
         String envUrl = System.getenv("DB_URL");
         String propUrl = props.getProperty("DB_URL");
 
-        if (propUrl != null && !propUrl.isBlank()) {
-            URL = propUrl.trim();
-        } else if (envUrl != null && !envUrl.isBlank()) {
-            URL = envUrl.trim();
-        } else {
-            String host = getPropOrEnv(props, "DB_HOST", "localhost");
+        if (host != null && !host.isBlank()) {
             String port = getPropOrEnv(props, "DB_PORT", "3306");
             String db = getPropOrEnv(props, "DB_NAME", "carbon_tracker");
             String sslMode = getPropOrEnv(props, "DB_SSL_MODE", null);
@@ -60,6 +56,12 @@ public class DatabaseUtil {
             }
 
             URL = urlBuilder.toString();
+        } else if (propUrl != null && !propUrl.isBlank() && propUrl.startsWith("jdbc:")) {
+            URL = propUrl.trim();
+        } else if (envUrl != null && !envUrl.isBlank() && envUrl.startsWith("jdbc:")) {
+            URL = envUrl.trim();
+        } else {
+            URL = "jdbc:mysql://localhost:3306/carbon_tracker";
         }
 
         USER = getPropOrEnv(props, "DB_USER", "root");
