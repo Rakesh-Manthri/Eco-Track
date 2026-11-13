@@ -13,5 +13,10 @@ lib/
 # IDE configurations
 .vscode/
 
+# Database configuration and secrets
+db.properties
+.env
+*.env
+
 # Ignore Mac OS hidden files
 .DS_Store

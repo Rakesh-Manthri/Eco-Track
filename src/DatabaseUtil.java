@@ -1,14 +1,82 @@
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
+import java.util.Properties;
 
 public class DatabaseUtil {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/carbon_tracker";
-    private static final String USER = "root";
-    private static final String PASSWORD = "rakes75045";
+    private static String URL;
+    private static String USER;
+    private static String PASSWORD;
+
+    static {
+        loadConfiguration();
+    }
+
+    private static void loadConfiguration() {
+        Properties props = new Properties();
+        File propFile = new File("db.properties");
+        if (propFile.exists()) {
+            try (InputStream in = new FileInputStream(propFile)) {
+                props.load(in);
+            } catch (Exception e) {
+                System.err.println("⚠️ Warning: Could not read db.properties file: " + e.getMessage());
+            }
+        }
+
+        String envUrl = System.getenv("DB_URL");
+        String propUrl = props.getProperty("DB_URL");
+
+        if (propUrl != null && !propUrl.isBlank()) {
+            URL = propUrl.trim();
+        } else if (envUrl != null && !envUrl.isBlank()) {
+            URL = envUrl.trim();
+        } else {
+            String host = getPropOrEnv(props, "DB_HOST", "localhost");
+            String port = getPropOrEnv(props, "DB_PORT", "3306");
+            String db = getPropOrEnv(props, "DB_NAME", "carbon_tracker");
+            String sslMode = getPropOrEnv(props, "DB_SSL_MODE", null);
+            String useSsl = getPropOrEnv(props, "DB_USE_SSL", null);
+
+            StringBuilder urlBuilder = new StringBuilder("jdbc:mysql://")
+                .append(host).append(":").append(port).append("/").append(db);
+
+            boolean isCloud = !host.equalsIgnoreCase("localhost") && !host.equals("127.0.0.1");
+            if (isCloud) {
+                urlBuilder.append("?useSSL=true");
+                if (sslMode != null && !sslMode.isBlank()) {
+                    urlBuilder.append("&sslMode=").append(sslMode.trim());
+                } else {
+                    urlBuilder.append("&sslMode=VERIFY_IDENTITY");
+                }
+                urlBuilder.append("&allowPublicKeyRetrieval=true");
+            } else if ("true".equalsIgnoreCase(useSsl)) {
+                urlBuilder.append("?useSSL=true");
+            }
+
+            URL = urlBuilder.toString();
+        }
+
+        USER = getPropOrEnv(props, "DB_USER", "root");
+        PASSWORD = getPropOrEnv(props, "DB_PASSWORD", "rakes75045");
+    }
+
+    private static String getPropOrEnv(Properties props, String key, String defaultVal) {
+        String val = props.getProperty(key);
+        if (val != null && !val.isBlank()) {
+            return val.trim();
+        }
+        val = System.getenv(key);
+        if (val != null && !val.isBlank()) {
+            return val.trim();
+        }
+        return defaultVal;
+    }
 
     public static Connection getConnection() throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.cj.jdbc.Driver");
@@ -17,10 +85,10 @@ public class DatabaseUtil {
 
     public static void initializeDatabase() {
         try (Connection conn = getConnection()) {
-            System.out.println("✅ Connected to database automatically. Schema is managed by setup_db.sql");
+            System.out.println("✅ Connected to database: " + URL);
             seedDefaultData(conn);
         } catch (SQLException | ClassNotFoundException e) {
-            System.err.println("❌ Error connecting to database: " + e.getMessage());
+            System.err.println("❌ Error connecting to database (" + URL + "): " + e.getMessage());
             e.printStackTrace();
         }
     }

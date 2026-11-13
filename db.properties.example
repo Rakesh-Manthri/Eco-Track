@@ -1,0 +1,22 @@
+# ==============================================================
+# Eco-Track Database Configuration Template
+# Copy this file to 'db.properties' and fill in your credentials.
+# 'db.properties' is gitignored to protect your credentials.
+# ==============================================================
+
+# For TiDB Cloud Serverless:
+# 1. Sign up at https://tidbcloud.com (free, no credit card required)
+# 2. Create a "Serverless" cluster and click "Connect"
+# 3. Choose "Java" / "General" to get your endpoint details
+DB_HOST=gateway01.ap-southeast-1.prod.aws.tidbcloud.com
+DB_PORT=4000
+DB_NAME=carbon_tracker
+DB_USER=your_user_prefix.root
+DB_PASSWORD=your_tidb_password
+DB_SSL_MODE=VERIFY_IDENTITY
+
+# Set to true if you are connecting to TiDB Cloud or any remote SSL MySQL instance
+DB_USE_SSL=true
+
+# (Optional) Full JDBC URL override if you prefer to paste directly:
+# DB_URL=jdbc:mysql://gateway01.ap-southeast-1.prod.aws.tidbcloud.com:4000/carbon_tracker?sslMode=VERIFY_IDENTITY&useSSL=true
